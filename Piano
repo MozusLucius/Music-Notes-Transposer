@@ -1,0 +1,326 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Piano extends JFrame implements ActionListener {
+
+    JTextArea area = new JTextArea();
+    JTextArea area2 = new JTextArea();
+    JLabel forTranspose, tracker;
+    JButton translate, transAdd, transSub;
+    String input;
+    String single = null;
+    static int tp = 0;
+    char b;
+
+    String[] tl = {"C1-", "C#1-", "D1-", "D#1-", "E1-", "F1-", "F#1-", "G1-", "G#1-", "A1-", "A#1-", "B1-",
+            "C2-", "C#2-", "D2-", "D#2-", "E2-", "F2-", "F#2-", "G2-", "G#2-", "A2-", "A#2-", "B2-",
+            "C3-", "C#3-", "D3-", "D#3-", "E3-", "F3-", "F#3-", "G3-", "G#3-", "A3-", "A#3-", "B3-",
+            "C4-", "C#4-", "D4-", "D#4-", "E4-", "F4-", "F#4-", "G4-", "G#4-", "A4-", "A#4-", "B4-",
+            "C5-", "C#5-", "D5-", "D#5-", "E5-", "F5-", "F#5-", "G5-", "G#5-", "A5-", "A#5-", "B5-",
+            "C6-", "C#6-", "D6-", "D#6-", "E6-", "F6-", "F#6-", "G6-", "G#6-", "A6-", "A#6-", "B6-",
+            "C7-", "C#7-", "D7-", "D#7-", "E7-", "F7-", "F#7-", "G7-", "G#7-", "A7-", "A#7-", "B7-", "C8-"};
+
+    /*These are the keys at tp=0/default
+    String[] tl = {"C2-", "C#2-", "D2-", "D#2-", "E2-", "F2-", "F#2-", "G2-", "G#2-", "A2-", "A#2-", "B2-",
+                    "C3-", "C#3-", "D3-", "D#3-", "E3-", "F3-", "F#3-", "G3-", "G#3-", "A3-", "A#3-", "B3-",
+                    "C4-", "C#4-", "D4-", "D#4-", "E4-", "F4-", "F#4-", "G4-", "G#4-", "A4-", "A#4-", "B4-",
+                    "C5-", "C#5-", "D5-", "D#5-", "E5-", "F5-", "F#5-", "G5-", "G#5-", "A5-", "A#5-", "B5-",
+                    "C6-", "C#6-", "D6-", "D#6-", "E6-", "F6-", "F#6-", "G6-", "G#6-", "A6-", "A#6-", "B6-", "C7-"};
+    */
+
+    Piano(){
+        setTitle("Keyboard to Piano Notes Translator");
+        setBounds(300,0,1100,800);
+        getContentPane().setBackground(Color.DARK_GRAY);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        area.setText(input);
+//        area.setLayout(new BoxLayout(area, BoxLayout.Y_AXIS));
+        area.setFont(new Font(null, Font.PLAIN, 26));
+        area.setPreferredSize(new Dimension(550,0));
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        //area2.setLayout(new BoxLayout(area2, BoxLayout.Y_AXIS));
+        area2.setFont(new Font(null, Font.PLAIN, 26));
+        area2.setPreferredSize(new Dimension(550,0));
+        area2.setBackground(Color.DARK_GRAY);
+        area2.setForeground(Color.WHITE);
+        area2.setLineWrap(true);
+        area2.setEditable(false);
+
+        JPanel topCon = new JPanel();
+        topCon.setBackground(new Color(0x90e0a5));
+        topCon.setPreferredSize(new Dimension(0,100));
+        topCon.setLayout(null);
+
+        translate = new JButton("Translate");
+        translate.setBounds(475,43,120,40);
+        translate.setFocusable(false);
+        translate.addActionListener(this);
+
+        forTranspose = new JLabel("Transpose: "+tp);
+        forTranspose.setFont(new Font("Arial", Font.BOLD, 25));
+        forTranspose.setBounds(50,11,190,26);
+        transAdd = new JButton("+"); transAdd.addActionListener(this); transAdd.setFocusable(false);
+        transSub = new JButton("-"); transSub.addActionListener(this); transSub.setFocusable(false);
+        transAdd.setBounds(160,43,43,43);
+        transSub.setBounds(60,43,43,43);
+
+        topCon.add(translate);
+        topCon.add(forTranspose);
+        topCon.add(transSub); topCon.add(transAdd);
+        //JPanel
+        JPanel areaHolders = new JPanel();
+        areaHolders.setLayout(new GridLayout(1,2));
+
+        JScrollPane areaScroll = new JScrollPane(area);
+        areaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane area2Scroll = new JScrollPane(area2);
+        area2Scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        area2Scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        areaHolders.add(areaScroll); areaHolders.add(area2Scroll);
+
+        add(topCon, BorderLayout.NORTH);
+        add(areaHolders, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void tp0(){
+        switch (b) {
+            case '1':
+                single = tl[tp+12];
+                break;
+            case '!':
+                single = tl[tp+13];
+                break;
+            case '2':
+                single = tl[tp+14];
+                break;
+            case '@':
+                single = tl[tp+15];
+                break;
+            case '3':
+                single = tl[tp+16];
+                break;
+            case '4':
+                single = tl[tp+17];
+                break;
+            case '$':
+                single = tl[tp+18];
+                break;
+            case '5':
+                single = tl[tp+19];
+                break;
+            case '%':
+                single = tl[tp+20];
+                break;
+            case '6':
+                single = tl[tp+21];
+                break;
+            case '^':
+                single = tl[tp+22];
+                break;
+            case '7':
+                single = tl[tp+23];
+                break;
+            case '8':
+                single = tl[tp+24];
+                break;
+            case '*':
+                single = tl[tp+25];
+                break;
+            case '9':
+                single = tl[tp+26];
+                break;
+            case '(':
+                single = tl[tp+27];
+                break;
+            case '0':
+                single = tl[tp+28];
+                break;
+            case 'q':
+                single = tl[tp+29];
+                break;
+            case 'Q':
+                single = tl[tp+30];
+                break;
+            case 'w':
+                single = tl[tp+31];
+                break;
+            case 'W':
+                single = tl[tp+32];
+                break;
+            case 'e':
+                single = tl[tp+33];
+                break;
+            case 'E':
+                single = tl[tp+34];
+                break;
+            case 'r':
+                single = tl[tp+35];
+                break;
+            case 't':
+                single = tl[tp+36];
+                break;
+            case 'T':
+                single = tl[tp+37];
+                break;
+            case 'y':
+                single = tl[tp+38];
+                break;
+            case 'Y':
+                single = tl[tp+39];
+                break;
+            case 'u':
+                single = tl[tp+40];
+                break;
+            case 'i':
+                single = tl[tp+41];
+                break;
+            case 'I':
+                single = tl[tp+42];
+                break;
+            case 'o':
+                single = tl[tp+43];
+                break;
+            case 'O':
+                single = tl[tp+44];
+                break;
+            case 'p':
+                single = tl[tp+45];
+                break;
+            case 'P':
+                single = tl[tp+46];
+                break;
+            case 'a':
+                single = tl[tp+47];
+                break;
+            case 's':
+                single = tl[tp+48];
+                break;
+            case 'S':
+                single = tl[tp+49];
+                break;
+            case 'd':
+                single = tl[tp+50];
+                break;
+            case 'D':
+                single = tl[tp+51];
+                break;
+            case 'f':
+                single = tl[tp+52];
+                break;
+            case 'g':
+                single = tl[tp+53];
+                break;
+            case 'G':
+                single = tl[tp+54];
+                break;
+            case 'h':
+                single = tl[tp+55];
+                break;
+            case 'H':
+                single = tl[tp+56];
+                break;
+            case 'j':
+                single = tl[tp+57];
+                break;
+            case 'J':
+                single = tl[tp+58];
+                break;
+            case 'k':
+                single = tl[tp+59];
+                break;
+            case 'l':
+                single = tl[tp+60];
+                break;
+            case 'L':
+                single = tl[tp+61];
+                break;
+            case 'z':
+                single = tl[tp+62];
+                break;
+            case 'Z':
+                single = tl[tp+63];
+                break;
+            case 'x':
+                single = tl[tp+64];
+                break;
+            case 'c':
+                single = tl[tp+65];
+                break;
+            case 'C':
+                single = tl[tp+66];
+                break;
+            case 'v':
+                single = tl[tp+67];
+                break;
+            case 'V':
+                single = tl[tp+68];
+                break;
+            case 'b':
+                single = tl[tp+69];
+                break;
+            case 'B':
+                single = tl[tp+70];
+                break;
+            case 'n':
+                single = tl[tp+71];
+                break;
+            case 'm':
+                single = tl[tp+72];
+                break;
+            case ' ':
+                single = " ";
+                break;
+            case '\n':
+                single = "\n";
+                break;
+            default:
+                System.out.println("Invalid");
+        }
+    }
+
+    public void actionPerformed(ActionEvent e){
+
+        if (e.getSource() == translate) {
+            input = area.getText();
+            area2.setText("");
+            //area2
+            char[] letter = input.toCharArray();
+            for (char c : letter) {
+                System.out.println("Insert Translator here");
+                this.b = c;
+                tp0();
+                area2.setText(area2.getText() + single);
+            }
+            System.out.println("tp: "+tp);
+            setVisible(true);
+        }
+
+        if (e.getSource() == transAdd){
+            System.out.println("transAdd clicked.");
+            if(tp <=11){
+                tp++;
+            } else if (tp ==12){
+                System.out.println("transAdd maxed.");
+            }
+            forTranspose.setText("Transpose: "+tp);
+
+        }
+        if (e.getSource() == transSub){
+            System.out.println("transSub clicked.");
+            if(tp >= -11){
+                tp--;
+            } else if (tp == -12){
+                System.out.println("transSub maxed.");
+            }
+            forTranspose.setText("Transpose: "+tp);
+        }
+
+    }
+
+    public static void main(String[] args){new Piano();}}
